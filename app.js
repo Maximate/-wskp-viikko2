@@ -2,28 +2,19 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-var cats = require('./routes/catRouter.js');
+const cors = require('cors');
+const catRoute = require('./routes/catRoute');
+const userRoute = require('./routes/userRoute');
 
-app.get('/', (req, res) => {
-  res.send('Home');
-});
+app.use(cors());
 
-app.post('/', function (req, res) {
-  res.send('With this endpoint you can add cats.')
-});
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
-app.put('/', function (req, res) {
-  res.send('With this endpoint you can edit cats.')
-});
+app.use(express.static('uploads'));
 
-app.delete('/', function (req, res) {
-  res.send('With this endpoint you can delete cats.')
-});
+app.use('/cat', catRoute);
+
+app.use('/user', userRoute);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-app.get('/cat/:id', (req, res) => {
-  res.send('You reqested a cat whose id is' + req.params);
-});
-
-app.use('/cats', cats);
